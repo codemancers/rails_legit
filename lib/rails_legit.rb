@@ -1,5 +1,8 @@
 require "rails_legit/version"
+require "active_support"
 
 module RailsLegit
-  autoload :DateValidator, 'date_validator'
+  extend ActiveSupport::Autoload
+
+  autoload :DateValidator
 end
