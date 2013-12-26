@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'rails/legit/version'
+require 'rails_legit/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "rails-legit"
-  spec.version       = Rails::Legit::VERSION
+  spec.name          = "rails_legit"
+  spec.version       = RailsLegit::VERSION
   spec.authors       = ["Kashyap"]
   spec.email         = ["kashyap.kmbc@gmail.com"]
   spec.description   = %q{Provides a DSL for common validation formats like Date, Array, DateTime etc.}
