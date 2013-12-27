@@ -35,9 +35,13 @@ module RailsLegit
       end
     end
 
-    def convert_dates_to_objects(string)
+    def convert_dates_to_objects(string_or_object)
       begin
-        self.date = Date.parse(string)
+        if string_or_object.respond_to? :to_date
+          self.date = string_or_object.to_date
+        else
+          self.date = Date.parse(string_or_object)
+        end
       rescue ArgumentError
         false
       end
