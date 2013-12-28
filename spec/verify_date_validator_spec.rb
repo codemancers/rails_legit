@@ -40,6 +40,20 @@ class TestRecordWithMultipleAttributesBeforeOption
   end
 end
 
+class TestRecordWithMultipleAttributesBeforeOptionCurrentSymbol
+  include ActiveModel::Validations
+  include RailsLegit
+
+  validates :date, :anotherdate, verify_date: { before: :today }
+
+  attr_accessor :date, :anotherdate, :before_date
+  def initialize(date, anotherdate, before_date)
+    @date = date
+    @anotherdate = anotherdate
+    @before_date = before_date
+  end
+end
+
 class TestRecordWithMultipleAttributesBeforeOptionProc
   include ActiveModel::Validations
   include RailsLegit
@@ -103,6 +117,13 @@ describe RailsLegit::VerifyDateValidator do
       context "comparision object is a Symbol" do
         let(:before_date) { Date.today + 1 }
         let(:record) { TestRecordWithMultipleAttributesBeforeOption.new(date, anotherdate, before_date) }
+
+        it { should be_valid }
+      end
+
+      context "comparision object is :current" do
+        let(:before_date) { :current }
+        let(:record) { TestRecordWithMultipleAttributesBeforeOptionCurrentSymbol.new(date, anotherdate, before_date) }
 
         it { should be_valid }
       end

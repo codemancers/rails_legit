@@ -48,7 +48,11 @@ module RailsLegit
         elsif v.is_a? Proc
           comparisions[k] = v.call
         elsif v.is_a? Symbol
-          comparisions[k] = v
+          if Date.respond_to? v
+            comparisions[k] = Date.send v
+          else
+            comparisions[k] = v
+          end
         elsif date = try_to_convert_to_date(v)
           comparisions[k] = date
         else
