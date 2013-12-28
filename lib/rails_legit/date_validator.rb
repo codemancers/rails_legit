@@ -23,6 +23,14 @@ module RailsLegit
       unless date_to_check = try_to_convert_to_date(value)
         record.errors.add(attribute, "Invalid Date Format")
       end
+
+      comparisions.each do |key, value|
+        date_to_be_checked_with = value.is_a?(Symbol) ? record.send(value) : value
+
+        unless date_to_check.send(VALID_COMPARISIONS[key], date_to_be_checked_with)
+          record.errors.add(attribute, "Occurs before #{value}")
+        end
+      end
     end
 
     def check_validity!
@@ -39,6 +47,8 @@ module RailsLegit
           comparisions[k] = v.send(:to_date)
         elsif v.is_a? Proc
           comparisions[k] = v.call
+        elsif v.is_a? Symbol
+          comparisions[k] = v
         elsif date = try_to_convert_to_date(v)
           comparisions[k] = date
         else
