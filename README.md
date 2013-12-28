@@ -10,11 +10,11 @@ and so on...
 
 This gem abstracts out this common logic and lets you do things like:
 
-    validates :start_date, date: { greater_than: Date.current }
+    validates :start_date, verify_date: { before: Date.current }
 
 or
 
-    validates :end_date, date: { greater_than: :current}
+    validates :end_date, verify_date: { before: :current}
 
 As of now, only `Date` and `DateTime` validators are implemented.
 
@@ -55,7 +55,7 @@ the event record.
 The `to` and `from` are DateTime objects that get stored in the DB. And the
 corresponding ActiveModel form: (assuming Rails 4)
 
-    class EventForm 
+    class EventForm
       include ActiveModel::Model
       attr_accessor :name, :description, :to, :from
       attr_accessor :to_date, :to_time
@@ -78,29 +78,30 @@ Adding validations is as simple as:
 
     class EventForm
       # unchanged from above
-      validates :from_date, :to_date, date: true
+      validates :from_date, :to_date, verify_date: true
     end
 
 Currently supported validation syntax elements are:
 
-    date: true
+    verify_date: true
 
 This will check if the date returned from the input fields in the UI is
 valid or not.
 
-    date: { greater_than: Date.current }
+    verify_date: { before: Date.current }
     # same as:
-    date: { greater_than: :current }
+    verify_date: { before: :current }
 
-The valid options are `:greater_than` and `:less_than`. You can pass in a
-method as a symbol or a `Date` object. By default, all symbols except
+The valid options are `:before`, `:after`, `:on_or_before`, `:on_or_after`, `:on`.
+
+You can pass in a method as a symbol, string or a `Date` object. By default, all symbols except
 `:current`, `:today`, `:now` are sent to the object under validation.
 
-    validates :from_date, date: { greater_than: :current } # Date.current is used
-    validates :from_date, date: { greater_than: :today   } # Date.current is used 
-    validates :from_date, date: { greater_than: :now     } # Date.current is used
+    validates :from_date, verify_date: { before: :current } # Date.current is used
+    validates :from_date, verify_date: { before: :today   } # Date.current is used
+    validates :from_date, verify_date: { before: :now     } # Date.current is used
 
-    validates :from_date, date: { greater_than: :end_date } # <EventForm Object>.end_date is used
+    validates :from_date, verify_date: { before: :end_date } # <EventForm Object>.end_date is used
 
 Finally,
 
@@ -108,8 +109,8 @@ Finally,
       attr_accessor :to_date, :from_date
       include ActiveModel::Model
       include RailsLegit
-      validates :from_date, date: { greater_than: :today }
-      validates :to_date, date: { greater_than: :from_date }
+      validates :from_date, verify_date: { before: :today }
+      validates :to_date, verify_date: { before: :from_date }
     end
 
 ## Contributing
