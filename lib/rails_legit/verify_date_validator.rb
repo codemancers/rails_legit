@@ -1,5 +1,5 @@
 module RailsLegit
-  class DateValidator < ActiveModel::EachValidator
+  class VerifyDateValidator < ActiveModel::EachValidator
 
     VALID_COMPARISIONS = {
       :before => :<,

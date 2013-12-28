@@ -5,7 +5,7 @@ class TestRecordWithNoExtraOptions
   include ActiveModel::Validations
   include RailsLegit
 
-  validates :date, date: true
+  validates :date, verify_date: true
 
   attr_accessor :date
   def initialize(date)
@@ -17,7 +17,7 @@ class TestRecordWithNoExtraOptionsMultipleAttributes
   include ActiveModel::Validations
   include RailsLegit
 
-  validates :date, :anotherdate, date: true
+  validates :date, :anotherdate, verify_date: true
 
   attr_accessor :date, :anotherdate
   def initialize(date, anotherdate)
@@ -30,7 +30,7 @@ class TestRecordWithMultipleAttributesBeforeOption
   include ActiveModel::Validations
   include RailsLegit
 
-  validates :date, :anotherdate, date: { before: :before_date }
+  validates :date, :anotherdate, verify_date: { before: :before_date }
 
   attr_accessor :date, :anotherdate, :before_date
   def initialize(date, anotherdate, before_date)
@@ -44,7 +44,7 @@ class TestRecordWithMultipleAttributesBeforeOptionProc
   include ActiveModel::Validations
   include RailsLegit
 
-  validates :date, :anotherdate, date: { before: ->{ Date.today + 1 } }
+  validates :date, :anotherdate, verify_date: { before: ->{ Date.today + 1 } }
 
   attr_accessor :date, :anotherdate
   def initialize(date, anotherdate)
@@ -53,7 +53,7 @@ class TestRecordWithMultipleAttributesBeforeOptionProc
   end
 end
 
-describe RailsLegit::DateValidator do
+describe RailsLegit::VerifyDateValidator do
   describe "No Extra Options provided" do
     let(:record) { TestRecordWithNoExtraOptions.new(date) }
     subject { record }
