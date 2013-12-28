@@ -1,17 +1,9 @@
 shared_examples "basic date validations" do
+
   context "Invalid Date" do
     let(:date) { "Invalid Date" }
-
-    it "should be invalid" do
-      expect(record).to be_invalid
-    end
-
-    it "should throw the appropriate error" do
-      record.valid?
-      expect(record.errors[:date]).to include("Invalid Date Format")
-    end
+    it { should be_invalid }
   end
-
 
   context "Valid Date as a String" do
     let(:date) { "21 December 2013" }

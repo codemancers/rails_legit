@@ -17,12 +17,12 @@ class TestRecordWithNoExtraOptionsMultipleAttributes
   include ActiveModel::Validations
   include RailsLegit
 
-  validates :date, :todate, date: true
+  validates :date, :anotherdate, date: true
 
-  attr_accessor :date, :todate
-  def initialize(date, todate)
+  attr_accessor :date, :anotherdate
+  def initialize(date, anotherdate)
     @date = date
-    @todate   = todate
+    @anotherdate = anotherdate
   end
 end
 
@@ -32,6 +32,15 @@ describe RailsLegit::DateValidator do
     subject { record }
 
     include_examples "basic date validations"
+
+    context "Invalid Date" do
+      let(:date) { "Invalid Date" }
+
+      it "should attach error on appropriate method" do
+        record.valid?
+        expect(record.errors[:date]).to include("Invalid Date Format")
+      end
+    end
   end
 
   describe "No Extra Options provided and multiple attributes" do
@@ -40,5 +49,15 @@ describe RailsLegit::DateValidator do
     subject { record }
 
     include_examples "basic date validations"
+
+    context "Invalid Date on comparision method" do
+      let(:anotherdate) { "Invalid Date" }
+      let(:date) { Date.today }
+
+      it "should attach error on appropirate method" do
+        record.valid?
+        expect(record.errors[:anotherdate]).to include("Invalid Date Format")
+      end
+    end
   end
 end
