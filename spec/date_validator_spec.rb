@@ -13,22 +13,30 @@ class TestRecordWithNoExtraOptions
   end
 end
 
-class TestRecordWithGreaterThanComparision
+class TestRecordWithNoExtraOptionsMultipleAttributes
   include ActiveModel::Validations
   include RailsLegit
-  attr_accessor :date, :comparision_date
 
-  validates :date, date: { greater_than: :comparision_date }
+  validates :date, :todate, date: true
 
-  def initialize(date, comparision_date)
+  attr_accessor :date, :todate
+  def initialize(date, todate)
     @date = date
-    @comparision_date = comparision_date
+    @todate   = todate
   end
 end
 
 describe RailsLegit::DateValidator do
   describe "No Extra Options provided" do
     let(:record) { TestRecordWithNoExtraOptions.new(date) }
+    subject { record }
+
+    include_examples "basic date validations"
+  end
+
+  describe "No Extra Options provided and multiple attributes" do
+    let(:record) { TestRecordWithNoExtraOptionsMultipleAttributes.new(date, anotherdate) }
+    let(:anotherdate) { Date.today }
     subject { record }
 
     include_examples "basic date validations"

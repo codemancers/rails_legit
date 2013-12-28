@@ -1,50 +1,61 @@
 module RailsLegit
-  class DateValidator < ActiveModel::Validator
-    attr_accessor :date, :date_to_be_compared_with
-    attr_accessor :attribute
+  class DateValidator < ActiveModel::EachValidator
+
+    VALID_COMPARISIONS = {
+      :before => :<,
+      :after => :>,
+      :on => :==,
+      :on_or_before => :<=,
+      :on_or_after => :>=,
+    }.freeze
+
+    attr_accessor :comparisions
 
     def initialize(options)
-      @attribute = options.delete(:attributes).first
       super
+      @comparisions = {}
+      process_options!
     end
 
-    def validate(record)
-      date_string = record.send attribute
-      return false if date_string.blank?
-
-      options.values.each do |comparison_date_string|
-        if comparison_date_string.in?([:current_date, :today])
-          @date_to_be_compared_with = Date.current
-        end
-
-        if comparison_date_string.in?([:from_date, :to_date])
-          unless @date_to_be_compared_with = convert_dates_to_objects(record.send(comparison_date_string))
-            record.errors.add(comparison_date_string, "Invalid Date Format")
-          end
-        end
-      end
-
-      unless convert_dates_to_objects(date_string)
+    def validate_each(record, attribute, value)
+      unless date_to_check = try_to_convert_to_date(value)
         record.errors.add(attribute, "Invalid Date Format")
       end
+    end
 
-      if options[:greater_than]
-        if date < date_to_be_compared_with
-          record.errors.add(attribute, I18n.t("app.errors.messages.occurs_before_from_date"))
+    def check_validity!
+      options.keys.each do |key|
+        unless VALID_COMPARISIONS.member?(key)
+          raise ArgumentError, "Valid keys for options are #{VALID_COMPARISIONS.keys.join(", ")}"
         end
       end
     end
 
-    def convert_dates_to_objects(string_or_object)
-      begin
-        if string_or_object.respond_to? :to_date
-          self.date = string_or_object.to_date
+    def process_options!
+      options.each do |k, v|
+        if v.respond_to?(:to_date)
+          comparisions[k] = v.send(:to_date)
+        elsif v.is_a? Proc
+          comparisions[k] = v.call
+        elsif date = try_to_convert_to_date(v)
+          comparisions[k] = date
         else
-          self.date = Date.parse(string_or_object)
+          raise ArgumentError, "Unable to understand the value for #{k}"
         end
-      rescue ArgumentError
-        false
       end
     end
+
+    def try_to_convert_to_date(arg)
+      if arg.respond_to? :to_date
+        arg.to_date
+      else
+        begin
+          Date.parse(arg)
+        rescue ArgumentError => e
+          return false
+        end
+      end
+    end
+
   end
 end
