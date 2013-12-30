@@ -151,7 +151,7 @@ describe RailsLegit::VerifyDateValidator do
 
         it "should attach error to the correct attribute" do
           record.valid?
-          expect(record.errors[:anotherdate]).to include("Occurs before before_date")
+          expect(record.errors[:anotherdate]).to include("Occurs before Before date")
         end
       end
     end

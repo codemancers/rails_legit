@@ -35,13 +35,15 @@ module RailsLegit
         date_to_be_checked_with_before_type_cast = value.is_a?(Symbol) ? record.send(value) : value
         date_to_be_checked_with = try_to_convert_to_date(date_to_be_checked_with_before_type_cast)
 
-        unless date_to_be_checked_with.send(VALID_COMPARISIONS[key], date_to_check)
-          if date_to_check < Date.current
-            record.errors.add(attribute, "Occurs in the past")
-          else
-            message = "Occurs before #{value.to_s.humanize}"
-            record.errors.add(attribute, message)
-          end
+        # TODO: should check for :current instead
+        message = if date_to_check < Date.today
+                    "Occurs in the past"
+                  else
+                    "Occurs before #{value.to_s.humanize}"
+                  end
+
+        unless date_to_check.send(VALID_COMPARISIONS[key], date_to_be_checked_with)
+          record.errors.add(attribute, message)
         end
       end
     end
@@ -79,7 +81,7 @@ module RailsLegit
         arg.to_date
       else
         begin
-          Date.parse(arg)
+          Date.parse(arg.to_s)
         rescue ArgumentError => e
           return false
         end
