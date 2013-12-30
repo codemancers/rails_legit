@@ -18,19 +18,30 @@ module RailsLegit
     end
 
     def validate_each(record, attribute, value)
+
+      date_to_check = try_to_convert_to_date(value)
+
       if value.nil?
         record.errors.add(attribute, "Can't be nil")
+        return
       end
 
-      unless date_to_check = try_to_convert_to_date(value)
+      unless date_to_check
         record.errors.add(attribute, "Invalid Date Format")
+        return
       end
 
       comparisions.each do |key, value|
-        date_to_be_checked_with = value.is_a?(Symbol) ? record.send(value) : value
+        date_to_be_checked_with_before_type_cast = value.is_a?(Symbol) ? record.send(value) : value
+        date_to_be_checked_with = try_to_convert_to_date(date_to_be_checked_with_before_type_cast)
 
-        unless date_to_check.send(VALID_COMPARISIONS[key], date_to_be_checked_with)
-          record.errors.add(attribute, "Occurs before #{value}")
+        unless date_to_be_checked_with.send(VALID_COMPARISIONS[key], date_to_check)
+          if date_to_check < Date.current
+            record.errors.add(attribute, "Occurs in the past")
+          else
+            message = "Occurs before #{value.to_s.humanize}"
+            record.errors.add(attribute, message)
+          end
         end
       end
     end
@@ -74,6 +85,5 @@ module RailsLegit
         end
       end
     end
-
   end
 end
