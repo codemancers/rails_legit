@@ -18,6 +18,10 @@ module RailsLegit
     end
 
     def validate_each(record, attribute, value)
+      if value.nil?
+        record.errors.add(attribute, "Can't be nil")
+      end
+
       unless date_to_check = try_to_convert_to_date(value)
         record.errors.add(attribute, "Invalid Date Format")
       end
