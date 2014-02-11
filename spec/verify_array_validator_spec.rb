@@ -5,8 +5,7 @@ describe RailsLegit::VerifyArrayValidator do
   subject { record }
 
   describe "No Extra Options provided" do
-    let(:record) { TestRecordWithNoExtraOptionsArray.new(array) }
-    subject { record }
+    let(:record) { NoOptionsSingleAttribute.new(array) }
 
     context "Valid Array" do
       let(:array) { [1, 2, 3] }
@@ -25,9 +24,8 @@ describe RailsLegit::VerifyArrayValidator do
   end
 
   describe "No Extra Options provided and multiple attributes" do
-    let(:record) { TestRecordWithNoExtraOptionsMultipleAttributesArray.new(array, anotherarray) }
+    let(:record) { NoOptionsMultipleAttributes.new(array, anotherarray) }
     let(:anotherarray) { [1, 2, 3] }
-    subject { record }
 
     context "Valid Array" do
       let(:array) { [1, 2, 3] }
@@ -46,26 +44,25 @@ describe RailsLegit::VerifyArrayValidator do
     end
   end
 
-  describe "In option, multiple attributes, Valid case" do
+  describe "Multiple attributes, Valid case" do
     let(:array) { [1, 2, 3] }
     let(:anotherarray) { [4, 3] }
-    subject { record }
 
     context "In validator" do
       context "comparision object is a Proc" do
-        let(:record) { TestRecordWithMultipleAttributesInOptionProc.new(array, anotherarray) }
+        let(:record) { MultipleAttributesInOptionProc.new(array, anotherarray) }
 
         it { should be_valid }
       end
 
       context "comparision object is a Symbol" do
-        let(:record) { TestRecordWithMultipleAttributesInOptionSymbol.new(array, anotherarray) }
+        let(:record) { MultipleAttributesInOptionSymbol.new(array, anotherarray) }
 
         it { should be_valid }
       end
 
       context "comparision object is Array" do
-        let(:record) { TestRecordWithMultipleAttributesInOptionArray.new(array, anotherarray) }
+        let(:record) { MultipleAttributesInOptionArray.new(array, anotherarray) }
 
         it { should be_valid }
       end
@@ -73,45 +70,44 @@ describe RailsLegit::VerifyArrayValidator do
 
     context "NotIn validator" do
       context "comparision object is a Proc" do
-        let(:record) { TestRecordWithMultipleAttributesNotInOptionProc.new(array, anotherarray) }
+        let(:record) { MultipleAttributesNotInOptionProc.new(array, anotherarray) }
 
         it { should_not be_valid }
       end
 
       context "comparision object is a Symbol" do
-        let(:record) { TestRecordWithMultipleAttributesNotInOptionSymbol.new(array, anotherarray) }
+        let(:record) { MultipleAttributesNotInOptionSymbol.new(array, anotherarray) }
 
         it { should_not be_valid }
       end
 
       context "comparision object is Array" do
-        let(:record) { TestRecordWithMultipleAttributesNotInOptionArray.new(array, anotherarray) }
+        let(:record) { MultipleAttributesNotInOptionArray.new(array, anotherarray) }
 
         it { should_not be_valid }
       end
     end
   end
 
-  describe "In option, multiple attributes, Invalid case" do
+  describe "Multiple attributes, Invalid case" do
     let(:array) { [4, 1, 5] }
     let(:anotherarray) { [8, 9] }
-    subject { record }
 
     context "In validator" do
       context "comparision object is a Proc" do
-        let(:record) { TestRecordWithMultipleAttributesInOptionProc.new(array, anotherarray) }
+        let(:record) { MultipleAttributesInOptionProc.new(array, anotherarray) }
 
         it { should_not be_valid }
       end
 
       context "comparision object is a Symbol" do
-        let(:record) { TestRecordWithMultipleAttributesInOptionSymbol.new(array, anotherarray) }
+        let(:record) { MultipleAttributesInOptionSymbol.new(array, anotherarray) }
 
         it { should_not be_valid }
       end
 
       context "comparision object is Array" do
-        let(:record) { TestRecordWithMultipleAttributesInOptionArray.new(array, anotherarray) }
+        let(:record) { MultipleAttributesInOptionArray.new(array, anotherarray) }
 
         it { should_not be_valid }
       end
@@ -119,19 +115,19 @@ describe RailsLegit::VerifyArrayValidator do
 
     context "NotIn validator" do
       context "comparision object is a Proc" do
-        let(:record) { TestRecordWithMultipleAttributesNotInOptionProc.new(array, anotherarray) }
+        let(:record) { MultipleAttributesNotInOptionProc.new(array, anotherarray) }
 
         it { should be_valid }
       end
 
       context "comparision object is a Symbol" do
-        let(:record) { TestRecordWithMultipleAttributesNotInOptionSymbol.new(array, anotherarray) }
+        let(:record) { MultipleAttributesNotInOptionSymbol.new(array, anotherarray) }
 
         it { should be_valid }
       end
 
       context "comparision object is Array" do
-        let(:record) { TestRecordWithMultipleAttributesNotInOptionArray.new(array, anotherarray) }
+        let(:record) { MultipleAttributesNotInOptionArray.new(array, anotherarray) }
 
         it { should be_valid }
       end

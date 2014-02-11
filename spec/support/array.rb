@@ -2,7 +2,7 @@ require "active_model"
 
 # Setup Classes
 
-class TestRecordWithNoExtraOptionsArray
+class NoOptionsSingleAttribute
   include ActiveModel::Validations
   include RailsLegit
 
@@ -14,103 +14,70 @@ class TestRecordWithNoExtraOptionsArray
   end
 end
 
-class TestRecordWithNoExtraOptionsMultipleAttributesArray
+class BaseRecord
   include ActiveModel::Validations
   include RailsLegit
 
-  validates :array, :anotherarray, verify_array: true
-
   attr_accessor :array, :anotherarray
+
   def initialize(array, anotherarray)
     @array = array
     @anotherarray = anotherarray
   end
 end
 
-class TestRecordWithMultipleAttributesInOptionSymbol
-  include ActiveModel::Validations
-  include RailsLegit
+class NoOptionsMultipleAttributes < BaseRecord
+  validates :array, :anotherarray, verify_array: true
+end
 
+class MultipleAttributesInOptionArray < BaseRecord
+  validates :array, :anotherarray, verify_array: { in: [1, 2, 3, 4] }
+end
+
+class MultipleAttributesNotInOptionArray < BaseRecord
+  validates :array, :anotherarray, verify_array: { not_in: [1, 2, 3, 4] }
+end
+
+class MultipleAttributesInOptionProc < BaseRecord
+  validates :array, :anotherarray, verify_array: { in: ->{ [1, 2, 3, 4] } }
+end
+
+class MultipleAttributesNotInOptionProc < BaseRecord
+  validates :array, :anotherarray, verify_array: { not_in: ->{ [1, 2, 3, 4] } }
+end
+
+class MultipleAttributesInOptionSymbol < BaseRecord
   validates :array, :anotherarray, verify_array: { in: :some_other_array }
 
-  attr_accessor :array, :anotherarray
-  def initialize(array, anotherarray)
-    @array = array
-    @anotherarray = anotherarray
-  end
-
-
   def some_other_array
     [1, 2, 3, 4]
   end
 end
 
-class TestRecordWithMultipleAttributesNotInOptionSymbol
-  include ActiveModel::Validations
-  include RailsLegit
-
+class MultipleAttributesNotInOptionSymbol < BaseRecord
   validates :array, :anotherarray, verify_array: { not_in: :some_other_array }
 
-  attr_accessor :array, :anotherarray
-  def initialize(array, anotherarray)
-    @array = array
-    @anotherarray = anotherarray
-  end
-
-
   def some_other_array
     [1, 2, 3, 4]
   end
 end
 
-class TestRecordWithMultipleAttributesInOptionArray
-  include ActiveModel::Validations
-  include RailsLegit
+class MultipleAttributesBothOptionsSymbol < BaseRecord
+  validates :array, :anotherarray, verify_array: { in: :some_array, not_in: :some_other_array }
 
-  validates :array, :anotherarray, verify_array: { in: [1, 2, 3, 4] }
+  def some_array
+    [1, 2, 3, 4]
+  end
 
-  attr_accessor :array, :anotherarray
-  def initialize(array, anotherarray)
-    @array = array
-    @anotherarray = anotherarray
+  def some_other_array
+    [5, 6, 7, 8]
   end
 end
 
-class TestRecordWithMultipleAttributesNotInOptionArray
-  include ActiveModel::Validations
-  include RailsLegit
-
-  validates :array, :anotherarray, verify_array: { not_in: [1, 2, 3, 4] }
-
-  attr_accessor :array, :anotherarray
-  def initialize(array, anotherarray)
-    @array = array
-    @anotherarray = anotherarray
-  end
+class MultipleAttributesBothOptionsProc < BaseRecord
+  validates :array, :anotherarray, verify_array: { in: ->{ [1, 2, 3, 4] }, not_in: ->{ [5, 6, 7, 8] } }
 end
 
-class TestRecordWithMultipleAttributesInOptionProc
-  include ActiveModel::Validations
-  include RailsLegit
-
-  validates :array, :anotherarray, verify_array: { in: ->{ [1, 2, 3, 4] } }
-
-  attr_accessor :array, :anotherarray
-  def initialize(array, anotherarray)
-    @array = array
-    @anotherarray = anotherarray
-  end
-end
-
-class TestRecordWithMultipleAttributesNotInOptionProc
-  include ActiveModel::Validations
-  include RailsLegit
-
-  validates :array, :anotherarray, verify_array: { not_in: ->{ [1, 2, 3, 4] } }
-
-  attr_accessor :array, :anotherarray
-  def initialize(array, anotherarray)
-    @array = array
-    @anotherarray = anotherarray
-  end
+class MultipleAttributesBothOptionsArray < BaseRecord
+  validates :array, :anotherarray, verify_array: { in: [1, 2, 3, 4], not_in: [5, 6, 7, 8] }
 end
