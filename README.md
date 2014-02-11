@@ -113,6 +113,56 @@ Finally,
       validates :to_date, verify_date: { before: :from_date }
     end
 
+### Array Validator
+
+It is quite common to check whether an array of attributes is a subset
+of another array -- a list of valid IDs, for example. The `VerifyArray`
+validator handles the three cases of `:in`, :not_in` and `:eq`. The
+abstract functionality is as follows:
+
+    validates [1, 2, 3], verify_array: { in: [1, 2, 3, 4] } # => true
+    validates [1, 2, 3], verify_array: { in: [1, 2, 3] }    # => true
+    validates [1, 2, 3], verify_array: { in: [1, 2] }       # => false
+
+    # The ordering is not a factor
+    validates [3, 2, 1], verify_array: { in: [1, 2, 3, 4] } # => true
+
+    validates [1, 2], verify_array: { not_in: [4, 5] }      # => true
+    validates [1, 2], verify_array: { not_in: [1, 5] }      # => true
+
+    # :eq is a strict validator which will result true only if the given
+    # array contains the exact same elements (irrespective of order)
+    # compared to the verification array.
+
+    validates [1, 2], verify_array: { eq: [2, 1] }          # => true
+    validates [1, 2], verify_array: { eq: [3, 1] }          # => false
+
+Use this in validating your models like so:
+
+    # Specify a Symbol which is a method defined on the model
+    class EventInvitees < ActiveRecord::Base
+      validates :invited_users, verify_array: { in: :valid_users_in_db }
+
+      def valid_users_in_db
+        User.all.pluck(:id).map(&:to_s)
+      end
+    end
+
+    # or, specify an Array
+    class EventInvitees < ActiveRecord::Base
+      validates :invited_users, verify_array: { in: [1, 25, 155] }
+    end
+
+    # or, specify a Proc that returns an array
+    class EventInvitees < ActiveRecord::Base
+      validates :invited_users, verify_array: { in: ->{ [1, 25, 155] } }
+    end
+
+
+The only caveat here is that the verification item (symbol/proc) should
+return an Array.
+
+
 ## Contributing
 
 1. Fork it
