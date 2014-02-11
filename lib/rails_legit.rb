@@ -4,5 +4,5 @@ require "active_support"
 module RailsLegit
   extend ActiveSupport::Autoload
 
-  autoload :DateValidator
+  autoload :VerifyDateValidator
 end

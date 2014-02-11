@@ -10,11 +10,11 @@ and so on...
 
 This gem abstracts out this common logic and lets you do things like:
 
-    validates :start_date, date: { greater_than: Date.current }
+    validates :start_date, verify_date: { before: Date.current }
 
 or
 
-    validates :end_date, date: { greater_than: :current}
+    validates :end_date, verify_date: { before: :current}
 
 As of now, only `Date` and `DateTime` validators are implemented.
 
@@ -91,17 +91,18 @@ end
 
 Currently supported validation syntax elements are:
 
-    date: true
+    verify_date: true
 
 This will check if the date returned from the input fields in the UI is
 valid or not.
 
-    date: { greater_than: Date.current }
+    verify_date: { before: Date.current }
     # same as:
-    date: { greater_than: :current }
+    verify_date: { before: :current }
 
-The valid options are `:greater_than` and `:less_than`. You can pass in a
-method as a symbol or a `Date` object. By default, all symbols except
+The valid options are `:before`, `:after`, `:on_or_before`, `:on_or_after`, `:on`.
+
+You can pass in a method as a symbol, string or a `Date` object. By default, all symbols except
 `:current`, `:today`, `:now` are sent to the object under validation.
 
 ```ruby
