@@ -132,7 +132,17 @@ of another array -- a list of valid IDs, for example. The `VerifyArray`
 validator handles the three cases of `:in`, :not_in` and `:eq`. The
 abstract functionality is as follows:
 
+    # The simplest case would be to verify if a record attribute is an
+    # Array
+    validates [1, 2], verify_array: true                    # => true
+
+    # Or, you could specify options. Supported options are :in, :not_in,
+    # :eq
+
     validates [1, 2, 3], verify_array: { in: [1, 2, 3, 4] } # => true
+    # Note: The :in and :not_in validators are not strict. That is, the
+    # following will work as expected. This is similar to :eq in this
+    # case
     validates [1, 2, 3], verify_array: { in: [1, 2, 3] }    # => true
     validates [1, 2, 3], verify_array: { in: [1, 2] }       # => false
 
