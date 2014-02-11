@@ -1,16 +1,21 @@
 require "spec_helper"
-require "active_model"
+require "support/array"
 
-describe RailsLegit::VerifyDateValidator do
+describe RailsLegit::VerifyArrayValidator do
+
   describe "No Extra Options provided" do
-    let(:record) { TestRecordWithNoExtraOptions.new(array) }
+    let(:record) { TestRecordWithNoExtraOptionsArray.new(array) }
     subject { record }
 
-    include_examples "basic array validations"
+    context "Valid Array" do
+      let(:array) { [1, 2, 3] }
+      it { should be_valid }
+    end
 
     context "Invalid Array" do
       let(:array) { "Invalid Array" }
 
+      it { should_not be_valid }
       it "should attach error on appropriate method" do
         record.valid?
         expect(record.errors[:array]).to include("Not an Array")
@@ -19,16 +24,20 @@ describe RailsLegit::VerifyDateValidator do
   end
 
   describe "No Extra Options provided and multiple attributes" do
-    let(:record) { TestRecordWithNoExtraOptionsMultipleAttributes.new(array, anotherarray) }
+    let(:record) { TestRecordWithNoExtraOptionsMultipleAttributesArray.new(array, anotherarray) }
     let(:anotherarray) { [1, 2, 3] }
     subject { record }
 
-    include_examples "basic array validations"
+    context "Valid Array" do
+      let(:array) { [1, 2, 3] }
+      it { should be_valid }
+    end
 
     context "Invalid Array on comparision method" do
       let(:anotherarray) { "Invalid Array" }
       let(:array) { [1, 2, 3] }
 
+      it { should_not be_valid }
       it "should attach error on appropriate method" do
         record.valid?
         expect(record.errors[:anotherarray]).to include("Not an Array")

@@ -2,7 +2,7 @@ module RailsLegit
   class VerifyArrayValidator < ActiveModel::EachValidator
 
     VALID_COMPARISIONS = [
-      :in, :not_in
+      :in, :not_in, :eq
     ].freeze
 
     attr_accessor :comparisions
@@ -14,11 +14,6 @@ module RailsLegit
     end
 
     def validate_each(record, attribute, value)
-      if value.nil?
-        record.errors.add(attribute, "Can't be nil")
-        return
-      end
-
       unless value.is_a?(Array)
         record.errors.add(attribute, "Not an Array")
         return
@@ -46,21 +41,6 @@ module RailsLegit
       end
     end
 
-    def compare_both_arrays(record_array, verification_array, attribute, type_of_comparision, record)
-      record_array_set = Set.new(record_array)
-      verification_array_set = Set.new(verification_array)
-
-      if type_of_comparision == :in
-        unless record_array_set.subset?(verification_array_set)
-          record.errors.add(attribute, "The given array is not a subset of #{verification_array}")
-        end
-      elsif type_of_comparision == :not_in
-        if record_array_set.subset?(verification_array_set)
-          record.errors.add(attribute, "The given array is a subset of #{verification_array}. Expected it to not be one")
-        end
-      end
-    end
-
     def check_validity!
       options.keys.each do |key|
         unless VALID_COMPARISIONS.member?(key)
@@ -70,6 +50,25 @@ module RailsLegit
     end
 
     private
+
+    def compare_both_arrays(record_array, verification_array, attribute, type_of_comparision, record)
+      record_array_set = SortedSet.new(record_array)
+      verification_array_set = SortedSet.new(verification_array)
+
+      if type_of_comparision == :in
+        unless record_array_set.subset?(verification_array_set)
+          record.errors.add(attribute, "The given array is not a subset of #{verification_array}. Expected it to not be one")
+        end
+      elsif type_of_comparision == :not_in
+        if record_array_set.subset?(verification_array_set)
+          record.errors.add(attribute, "The given array is a subset of #{verification_array}. Expected it to not be one")
+        end
+      elsif type_of_comparision == :eq
+        unless record_array_set == verification_array_set
+          record.errors.add(attribute, "The given array is not equal to #{verification_array}. Expected it to be equal")
+        end
+      end
+    end
 
     def process_options!
       options.each do |k, v|

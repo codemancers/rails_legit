@@ -1,3 +1,5 @@
+require "active_model"
+
 shared_examples "basic date validations" do
 
   context "Invalid Date" do
@@ -25,7 +27,6 @@ shared_examples "basic date validations" do
     it { should be_valid }
   end
 end
-
 
 # Setup Classes
 

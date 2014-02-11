@@ -1,5 +1,5 @@
 require "spec_helper"
-require "active_model"
+require "support/date"
 
 describe RailsLegit::VerifyDateValidator do
   describe "No Extra Options provided" do
