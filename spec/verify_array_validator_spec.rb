@@ -2,6 +2,7 @@ require "spec_helper"
 require "support/array"
 
 describe RailsLegit::VerifyArrayValidator do
+  subject { record }
 
   describe "No Extra Options provided" do
     let(:record) { TestRecordWithNoExtraOptionsArray.new(array) }
@@ -133,6 +134,56 @@ describe RailsLegit::VerifyArrayValidator do
         let(:record) { TestRecordWithMultipleAttributesNotInOptionArray.new(array, anotherarray) }
 
         it { should be_valid }
+      end
+    end
+  end
+
+  describe "Both Options, Valid case" do
+    let(:array) { [1, 2] }
+    let(:anotherarray) { [1, 2, 3, 4] }
+
+    context "In validator" do
+      context "comparision against Proc" do
+        let(:record) { MultipleAttributesBothOptionsProc.new(array, anotherarray) }
+
+        it { should be_valid }
+      end
+
+      context "comparision against Symbol" do
+        let(:record) { MultipleAttributesBothOptionsSymbol.new(array, anotherarray) }
+
+        it { should be_valid }
+      end
+
+      context "comparision against Array" do
+        let(:record) { MultipleAttributesBothOptionsArray.new(array, anotherarray) }
+
+        it { should be_valid }
+      end
+    end
+  end
+
+  describe "Both Options, Invalid case" do
+    let(:array) { [5, 6] }
+    let(:anotherarray) { [3, 4] }
+
+    context "In validator" do
+      context "comparision against Proc" do
+        let(:record) { MultipleAttributesBothOptionsProc.new(array, anotherarray) }
+
+        it { should_not be_valid }
+      end
+
+      context "comparision against Symbol" do
+        let(:record) { MultipleAttributesBothOptionsSymbol.new(array, anotherarray) }
+
+        it { should_not be_valid }
+      end
+
+      context "comparision against Array" do
+        let(:record) { MultipleAttributesBothOptionsArray.new(array, anotherarray) }
+
+        it { should_not be_valid }
       end
     end
   end
