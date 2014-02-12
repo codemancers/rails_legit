@@ -55,15 +55,16 @@ module RailsLegit
       record_array_set = SortedSet.new(record_array)
       verification_array_set = SortedSet.new(verification_array)
 
-      if type_of_comparision == :in
+      case type_of_comparision
+      when :in
         unless record_array_set.subset?(verification_array_set)
           record.errors.add(attribute, "The given array is not a subset of #{verification_array}. Expected it to not be one")
         end
-      elsif type_of_comparision == :not_in
+      when :not_in
         if record_array_set.subset?(verification_array_set)
           record.errors.add(attribute, "The given array is a subset of #{verification_array}. Expected it to not be one")
         end
-      elsif type_of_comparision == :eq
+      when :eq
         unless record_array_set == verification_array_set
           record.errors.add(attribute, "The given array is not equal to #{verification_array}. Expected it to be equal")
         end
@@ -83,6 +84,5 @@ module RailsLegit
         end
       end
     end
-
   end
 end
