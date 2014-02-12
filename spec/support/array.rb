@@ -49,6 +49,8 @@ end
 class MultipleAttributesInOptionSymbol < BaseRecord
   validates :array, :anotherarray, verify_array: { in: :some_other_array }
 
+  private
+
   def some_other_array
     [1, 2, 3, 4]
   end
@@ -57,6 +59,8 @@ end
 class MultipleAttributesNotInOptionSymbol < BaseRecord
   validates :array, :anotherarray, verify_array: { not_in: :some_other_array }
 
+  private
+
   def some_other_array
     [1, 2, 3, 4]
   end
@@ -64,6 +68,8 @@ end
 
 class MultipleAttributesBothOptionsSymbol < BaseRecord
   validates :array, :anotherarray, verify_array: { in: :some_array, not_in: :some_other_array }
+
+  private
 
   def some_array
     [1, 2, 3, 4]

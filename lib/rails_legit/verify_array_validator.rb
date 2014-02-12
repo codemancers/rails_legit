@@ -23,7 +23,7 @@ module RailsLegit
         if v.nil?
           raise ArgumentError, "Cannot compare an array with nil"
         elsif v.is_a?(Symbol)
-          if record.respond_to?(v)
+          if record.respond_to?(v) || record.class.private_method_defined?(v)
             array_to_be_compared_with = record.send(v)
             if array_to_be_compared_with && array_to_be_compared_with.is_a?(Array)
               compare_both_arrays(value, array_to_be_compared_with, attribute, k, record)
