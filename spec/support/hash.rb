@@ -31,36 +31,60 @@ class NoOptionsMultipleAttributesHash < BaseRecordHashValidator
   validates :hash, :anotherhash, verify_hash: true
 end
 
-class MultipleAttributesKeyOptionSymbol < BaseRecordHashValidator
+class MultipleAttributesKeysOptionSymbol < BaseRecordHashValidator
   validates :hash, :anotherhash, verify_hash: { keys: :some_other_array }
 
+  private
+
   def some_other_array
-    [:one, :two, :three, :four]
+    [:one, :two, :three, :four, :five]
   end
 end
 
-class MultipleAttributesValueOptionSymbol < BaseRecordHashValidator
+class MultipleAttributesValuesOptionSymbol < BaseRecordHashValidator
   validates :hash, :anotherhash, verify_hash: { values: :some_other_array }
+
+  private
+
+  def some_other_array
+    [1, 2, 3, 4, 5]
+  end
+end
+
+class MultipleAttributesKeysOptionArray < BaseRecordHashValidator
+  validates :hash, :anotherhash, verify_hash: { keys: [:one, :two, :three, :four] }
+end
+
+class MultipleAttributesValuesOptionArray < BaseRecordHashValidator
+  validates :hash, :anotherhash, verify_hash: { values: [1, 2, 3, 4] }
+end
+
+class MultipleAttributesKeysOptionProc < BaseRecordHashValidator
+  validates :hash, :anotherhash, verify_hash: { keys: ->{ [:one, :two, :three, :four] } }
+end
+
+class MultipleAttributesValuesOptionProc < BaseRecordHashValidator
+  validates :hash, :anotherhash, verify_hash: { values: ->{ [1, 2, 3, 4] } }
+end
+
+class MultipleAttributesKeysValuesOptionProc < BaseRecordHashValidator
+  validates :hash, :anotherhash, verify_hash: { keys: ->{ [:one, :two, :three, :four] }, values: ->{ [1, 2, 3, 4] } }
+end
+
+class MultipleAttributesKeysValuesOptionArray < BaseRecordHashValidator
+  validates :hash, :anotherhash, verify_hash: { keys: [:one, :two, :three, :four], values: [1, 2, 3, 4] }
+end
+
+class MultipleAttributesKeysValuesOptionSymbol < BaseRecordHashValidator
+  validates :hash, :anotherhash, verify_hash: { keys: :some_array, values: :some_other_array }
+
+  def some_array
+    [:one, :two, :three, :four]
+  end
+
+  private
 
   def some_other_array
     [1, 2, 3, 4]
   end
-end
-
-class MultipleAttributesKeyOptionArray < BaseRecordHashValidator
-  # TODO: We need to provide a HashWithIndifferentAccess functionality here
-  validates :hash, :anotherhash, verify_hash: { keys: [:one, :two, :three, :four] }
-end
-
-class MultipleAttributesValueOptionArray < BaseRecordHashValidator
-  # TODO: We need to provide a HashWithIndifferentAccess functionality here
-  validates :hash, :anotherhash, verify_hash: { values: [1, 2, 3, 4] }
-end
-
-class MultipleAttributesKeyOptionProc < BaseRecordHashValidator
-  validates :hash, :anotherhash, verify_hash: { keys: ->{ [:one, :two, :three, :four] } }
-end
-
-class MultipleAttributesValueOptionProc < BaseRecordHashValidator
-  validates :hash, :anotherhash, verify_hash: { values: ->{ [1, 2, 3, 4] } }
 end
