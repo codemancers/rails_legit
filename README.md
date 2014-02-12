@@ -174,6 +174,47 @@ Use this in validating your models like so:
 The only caveat here is that the verification item (symbol/proc) should
 return an Array.
 
+### Hash Validator
+
+To validate a hash, you can do like so:
+
+    # some_hash = { one: 1, two: 2, three: 3 }
+    validates some_hash, verify_hash: { keys: [:one, :two, :three] } # => true
+    validates some_hash, verify_hash: { values: [1, 2, 3] }          # => true
+
+The valid options are `:keys` and `:values`. You can pass in an Array or
+a Proc that evaluates to an array or a method that is defined inside the
+class.
+
+    # You can use an Array as the option's value
+
+    class Skill < ActiveRecord::Base
+      validates :item, verify_hash: { keys: ['gardening', 'carpentry'] }
+    end
+
+    # You can use a Proc
+
+    class Skill < ActiveRecord::Base
+      validates :item, verify_hash: { keys: -> { ['gardening', 'carpentry'] } }
+    end
+
+    # Or, you can use a Symbol if a method with that name is defined
+
+    class Skill < ActiveRecord::Base
+      validates :item, verify_hash: { keys: :accepted_skill_names }
+
+      # The method can be private or a visible one
+      private
+
+      def accepted_skill_names
+        ['gardening', 'carpentry']
+      end
+    end
+
+The keys or values are checked for existence and not for equality. In
+other words even if the hash in the first example in Hash section was `{
+one: 1, two: 2 }`, it would still validate to true. To add to that, the
+ordering is not significant.
 
 ## Contributing
 
