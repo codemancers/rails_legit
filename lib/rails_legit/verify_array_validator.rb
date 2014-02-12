@@ -74,7 +74,7 @@ module RailsLegit
     def process_options!
       options.each do |k, v|
         unless v.is_a?(Proc) || v.is_a?(Symbol) || v.is_a?(Array)
-          raise ArgumentError, "Valid keys for options are #{VALID_COMPARISIONS.join(', ')}"
+          raise ArgumentError, "Valid values for options are a Proc or Symbol or an Array"
         end
 
         if v.is_a?(Proc)
