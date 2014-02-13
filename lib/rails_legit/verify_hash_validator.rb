@@ -23,22 +23,22 @@ module RailsLegit
 
       comparisions.each do |k, v|
         if v.nil?
-          raise ArgumentError, "Cannot compare with nil"
+          raise Errors::NilValueError
         elsif v.is_a?(Symbol)
           if record.respond_to?(v) || record.class.private_method_defined?(v)
             array_to_be_compared_with = record.send(v)
             if array_to_be_compared_with && array_to_be_compared_with.is_a?(Array)
               compare_both_arrays(value, array_to_be_compared_with, attribute, k, record)
             else
-              raise ArgumentError, "The comparision value was not an Array or didn't evaluate to an Array. It was #{array_to_be_compared_with}"
+              raise Errors::NotAnArrayError, array_to_be_compared_with
            end
           else
-            raise NoMethodError, "No method named #{v} on the record supplied"
+            raise Errors::NoMethodError, v
           end
         elsif v.is_a?(Array)
          compare_both_arrays(value, v, attribute, k, record)
         else
-          raise ArgumentError, "The comparision can be done against an array or a Proc that evaluates to an array"
+          raise Errors::NotAnArrayError
         end
       end
     end

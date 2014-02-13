@@ -183,4 +183,19 @@ describe RailsLegit::VerifyHashValidator do
         it { should_not be_valid }
       end
   end
+
+  context "Errors" do
+    context "No method on record when symbol is supplied" do
+      let(:hash) { { five: 5, six: 6, seven: 7 } }
+      let(:anotherhash) { { nine: 9, ten: 10 } }
+      let(:record) { SymbolNoMethod.new(hash, anotherhash) }
+
+      it "should raise an error" do
+        expect { record.valid? }.to raise_exception
+      end
+    end
+
+    context "Supplied value does not evaluate to an array" do
+    end
+  end
 end

@@ -88,3 +88,18 @@ class MultipleAttributesKeysValuesOptionSymbol < BaseRecordHashValidator
     [1, 2, 3, 4]
   end
 end
+
+# Error Fixtures
+class SymbolNoMethod < BaseRecordHashValidator
+  validates :hash, :anotherhash, verify_hash: { keys: :some_method, values: :some_other_method }
+
+  def some_array
+    [:one, :two, :three, :four]
+  end
+
+  private
+
+  def some_other_array
+    [1, 2, 3, 4]
+  end
+end
