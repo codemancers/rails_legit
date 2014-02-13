@@ -5,4 +5,5 @@ module RailsLegit
   extend ActiveSupport::Autoload
 
   autoload :VerifyDateValidator
+  autoload :VerifyArrayValidator
 end
