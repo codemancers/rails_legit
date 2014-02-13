@@ -198,26 +198,26 @@ class.
 
     # You can use an Array as the option's value
 
-    class Skill < ActiveRecord::Base
-      validates :item, verify_hash: { keys: ['gardening', 'carpentry'] }
+    class User < ActiveRecord::Base
+      validates :settings, verify_hash: { keys: ['public_email', 'public_profile'] }
     end
 
     # You can use a Proc
 
-    class Skill < ActiveRecord::Base
-      validates :item, verify_hash: { keys: -> { ['gardening', 'carpentry'] } }
+    class User < ActiveRecord::Base
+      validates :settings, verify_hash: { keys: -> { ['public_email', 'public_profile'] } }
     end
 
     # Or, you can use a Symbol if a method with that name is defined
 
-    class Skill < ActiveRecord::Base
-      validates :item, verify_hash: { keys: :accepted_skill_names }
+    class User < ActiveRecord::Base
+      validates :settings, verify_hash: { keys: :accepted_settings }
 
       # The method can be private or a visible one
       private
 
-      def accepted_skill_names
-        ['gardening', 'carpentry']
+      def accepted_settings
+        ['public_email', 'public_profile']
       end
     end
 
