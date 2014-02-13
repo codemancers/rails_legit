@@ -23,7 +23,7 @@ module RailsLegit
         if v.nil?
           raise ArgumentError, "Cannot compare an array with nil"
         elsif v.is_a?(Symbol)
-          if record.respond_to?(v)
+          if record.respond_to?(v) || record.class.private_method_defined?(v)
             array_to_be_compared_with = record.send(v)
             if array_to_be_compared_with && array_to_be_compared_with.is_a?(Array)
               compare_both_arrays(value, array_to_be_compared_with, attribute, k, record)
@@ -55,15 +55,16 @@ module RailsLegit
       record_array_set = SortedSet.new(record_array)
       verification_array_set = SortedSet.new(verification_array)
 
-      if type_of_comparision == :in
+      case type_of_comparision
+      when :in
         unless record_array_set.subset?(verification_array_set)
           record.errors.add(attribute, "The given array is not a subset of #{verification_array}. Expected it to not be one")
         end
-      elsif type_of_comparision == :not_in
+      when :not_in
         if record_array_set.subset?(verification_array_set)
           record.errors.add(attribute, "The given array is a subset of #{verification_array}. Expected it to not be one")
         end
-      elsif type_of_comparision == :eq
+      when :eq
         unless record_array_set == verification_array_set
           record.errors.add(attribute, "The given array is not equal to #{verification_array}. Expected it to be equal")
         end
@@ -73,7 +74,7 @@ module RailsLegit
     def process_options!
       options.each do |k, v|
         unless v.is_a?(Proc) || v.is_a?(Symbol) || v.is_a?(Array)
-          raise ArgumentError, "Valid keys for options are #{VALID_COMPARISIONS.join(', ')}"
+          raise ArgumentError, "Valid values for options are a Proc or Symbol or an Array"
         end
 
         if v.is_a?(Proc)
@@ -83,6 +84,5 @@ module RailsLegit
         end
       end
     end
-
   end
 end
