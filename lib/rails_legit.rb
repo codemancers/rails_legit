@@ -6,4 +6,5 @@ module RailsLegit
 
   autoload :VerifyDateValidator
   autoload :VerifyArrayValidator
+  autoload :VerifyHashValidator
 end

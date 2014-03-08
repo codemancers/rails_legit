@@ -1,8 +1,9 @@
 module RailsLegit
-  class VerifyArrayValidator < ActiveModel::EachValidator
+  class VerifyHashValidator < ActiveModel::EachValidator
 
     VALID_COMPARISIONS = [
-      :in, :not_in, :eq
+      :keys,
+      :values
     ].freeze
 
     attr_accessor :comparisions
@@ -14,14 +15,15 @@ module RailsLegit
     end
 
     def validate_each(record, attribute, value)
-      unless value.is_a?(Array)
-        record.errors.add(attribute, "Not an Array")
+      unless value.is_a?(Hash)
+        record.errors.add(attribute, "Not a Hash")
         return
       end
 
+
       comparisions.each do |k, v|
         if v.nil?
-          raise ArgumentError, "Cannot compare an array with nil"
+          raise ArgumentError, "Cannot compare with nil"
         elsif v.is_a?(Symbol)
           if record.respond_to?(v, true)
             array_to_be_compared_with = record.send(v)
@@ -29,12 +31,12 @@ module RailsLegit
               compare_both_arrays(value, array_to_be_compared_with, attribute, k, record)
             else
               raise ArgumentError, "The comparision value was not an Array or didn't evaluate to an Array. It was #{array_to_be_compared_with}"
-            end
+           end
           else
             raise NoMethodError, "No method named #{v} on the record supplied"
           end
         elsif v.is_a?(Array)
-          compare_both_arrays(value, v, attribute, k, record)
+         compare_both_arrays(value, v, attribute, k, record)
         else
           raise ArgumentError, "The comparision can be done against an array or a Proc that evaluates to an array"
         end
@@ -51,30 +53,25 @@ module RailsLegit
 
     private
 
-    def compare_both_arrays(record_array, verification_array, attribute, type_of_comparision, record)
-      record_array_set = SortedSet.new(record_array)
-      verification_array_set = SortedSet.new(verification_array)
-
+    def compare_both_arrays(record_hash, verification_array, attribute, type_of_comparision, record)
       case type_of_comparision
-      when :in
-        unless record_array_set.subset?(verification_array_set)
-          record.errors.add(attribute, "The given array is not a subset of #{verification_array}. Expected it to not be one")
-        end
-      when :not_in
-        if record_array_set.subset?(verification_array_set)
-          record.errors.add(attribute, "The given array is a subset of #{verification_array}. Expected it to not be one")
-        end
-      when :eq
-        unless record_array_set == verification_array_set
-          record.errors.add(attribute, "The given array is not equal to #{verification_array}. Expected it to be equal")
-        end
+      when :keys
+        record_array_set = SortedSet.new(record_hash.keys)
+        verification_array_set = SortedSet.new(verification_array)
+      when :values
+        record_array_set = SortedSet.new(record_hash.values)
+        verification_array_set = SortedSet.new(verification_array)
+      end
+
+      unless record_array_set.subset?(verification_array_set)
+        record.errors.add(attribute, "The given array is not a subset of #{verification_array}. Expected it to not be one")
       end
     end
 
     def process_options!
       options.each do |k, v|
         unless v.is_a?(Proc) || v.is_a?(Symbol) || v.is_a?(Array)
-          raise ArgumentError, "Valid values for options are a Proc or Symbol or an Array"
+          raise ArgumentError, "You need to specify either an Array or a Symbol or a Proc that returns an Array as an option value"
         end
 
         if v.is_a?(Proc)
