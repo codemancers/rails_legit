@@ -78,7 +78,7 @@ module RailsLegit
 
     def try_to_convert_to_date(arg)
       if arg.respond_to? :to_date
-        arg.to_date
+        arg.to_date rescue false
       else
         begin
           Date.parse(arg.to_s)

@@ -1,4 +1,5 @@
 require "active_model"
+require "active_support/core_ext/string/conversions"
 
 shared_examples "basic date validations" do
 
