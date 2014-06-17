@@ -40,6 +40,7 @@ module RailsLegit
       comparisions.each do |key, value|
         date_to_be_checked_with_before_type_cast = value.is_a?(Symbol) ? record.send(value) : value
         date_to_be_checked_with = try_to_convert_to_date(date_to_be_checked_with_before_type_cast)
+        next unless date_to_be_checked_with
 
         # TODO: should check for :current instead
         message = if date_to_check < Date.today

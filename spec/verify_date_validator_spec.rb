@@ -25,7 +25,7 @@ describe RailsLegit::VerifyDateValidator do
           end
 
           context 'Valid Date' do
-            let(:date) { Date.today }
+            let(:date) { Date.today + 15 }
 
             it "should attach error on appropriate method" do
               expect(record.valid?).to eq(false)
@@ -47,9 +47,9 @@ describe RailsLegit::VerifyDateValidator do
           end
 
           context 'Valid Date' do
-            let(:date) { Date.today }
+            let(:date) { Date.today + 15 }
 
-            it "should not attach error on appropriate method" do
+            it "should not attach error" do
               expect(record.valid?).to eq(true)
               expect(record.errors[:anotherdate]).to_not include('Occurs before Before date')
             end

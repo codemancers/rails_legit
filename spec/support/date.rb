@@ -47,7 +47,8 @@ class TestRecordWithExtraOptionsIfCondition
   include ActiveModel::Validations
   include RailsLegit
 
-  validates :date, verify_date: { before: :before_date }
+  validates :date, verify_date: { after: :before_date }
+  validates :anotherdate, verify_date: { before: :date }
   validates :anotherdate, verify_date: { before: :before_date }, if: :condition_true?
 
   attr_accessor :date, :anotherdate, :before_date
