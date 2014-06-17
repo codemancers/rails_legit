@@ -13,16 +13,18 @@ module RailsLegit
       :if, :unless
     ].freeze
 
-    attr_accessor :comparisions
+    attr_accessor :comparisions, :conditionals
 
     def initialize(options)
       super
       @comparisions = {}
+      @conditionals = {}
+
       process_options!
+      process_conditionals!
     end
 
     def validate_each(record, attribute, value)
-
       date_to_check = try_to_convert_to_date(value)
 
       if value.nil?
@@ -47,9 +49,25 @@ module RailsLegit
                   end
 
         unless date_to_check.send(VALID_COMPARISIONS[key], date_to_be_checked_with)
-          record.errors.add(attribute, message)
+          if conditionals_true_for(record)
+            record.errors.add(attribute, message)
+          end
         end
       end
+    end
+
+    def conditionals_true_for(record)
+      conditionals_truthiness = true
+
+      conditionals.each do |conditional, method|
+        if conditional == :if
+          conditionals_truthiness = !!record.send(method)
+        else
+          conditionals_truthiness = !record.send(method)
+        end
+      end
+
+      conditionals_truthiness
     end
 
     def check_validity!
@@ -70,8 +88,9 @@ module RailsLegit
     end
 
     def process_options!
-
       options.each do |k, v|
+        next if VALID_CONDITIONALS.member? k
+
         if v.respond_to?(:to_date)
           comparisions[k] = v.send(:to_date)
         elsif v.is_a? Proc
@@ -88,6 +107,19 @@ module RailsLegit
           raise ArgumentError, "Unable to understand the value for #{k}"
         end
       end
+    end
+
+    def process_conditionals!
+      options.each do |k, v|
+        next unless VALID_CONDITIONALS.member? k
+        #TODO: The assumption here is that the if condition takes only a method.
+        # But this can be similar to the other features on options clause
+        @conditionals[k] = v
+      end
+    end
+
+    def conditional_validations_present?
+      @conditionals.any?
     end
 
     def try_to_convert_to_date(arg)

@@ -5,18 +5,31 @@ describe RailsLegit::VerifyDateValidator do
   context 'Conditionals' do
     context 'If' do
       context 'No Extra Options Provided' do
-        let(:record) { TestRecordWithNoExtraOptionsIfCondition.new(date, condition) }
+        let(:record) do
+          TestRecordWithExtraOptionsIfCondition.new(date, anotherdate, before_date, condition)
+        end
+
         subject { record }
+        let(:anotherdate) { Date.today + 10 }
+        let(:before_date) { Date.today + 1 }
 
         context 'True Conditional' do
           let(:condition) { true }
-
           context "Invalid Date" do
             let(:date) { "Invalid Date" }
 
             it "should attach error on appropriate method" do
               expect(record.valid?).to eq(false)
               expect(record.errors[:date]).to include("Invalid Date Format")
+            end
+          end
+
+          context 'Valid Date' do
+            let(:date) { Date.today }
+
+            it "should attach error on appropriate method" do
+              expect(record.valid?).to eq(false)
+              expect(record.errors[:anotherdate]).to include('Occurs before Before date')
             end
           end
         end
@@ -27,9 +40,18 @@ describe RailsLegit::VerifyDateValidator do
           context "Invalid Date" do
             let(:date) { "Invalid Date" }
 
-            it "should not attach error on appropriate method" do
+            it "should attach error on appropriate method" do
               expect(record.valid?).to eq(false)
-              expect(record.errors[:date]).to_not include("Invalid Date Format")
+              expect(record.errors[:date]).to include("Invalid Date Format")
+            end
+          end
+
+          context 'Valid Date' do
+            let(:date) { Date.today }
+
+            it "should not attach error on appropriate method" do
+              expect(record.valid?).to eq(true)
+              expect(record.errors[:anotherdate]).to_not include('Occurs before Before date')
             end
           end
         end
