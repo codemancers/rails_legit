@@ -9,6 +9,10 @@ module RailsLegit
       :on_or_after => :>=,
     }.freeze
 
+    VALID_CONDITIONALS = [
+      :if, :unless
+    ].freeze
+
     attr_accessor :comparisions
 
     def initialize(options)
@@ -49,14 +53,24 @@ module RailsLegit
     end
 
     def check_validity!
+      comparisions = VALID_COMPARISIONS.keys.push *VALID_CONDITIONALS
+
       options.keys.each do |key|
-        unless VALID_COMPARISIONS.member?(key)
-          raise ArgumentError, "Valid keys for options are #{VALID_COMPARISIONS.keys.join(", ")}"
+        unless comparisions.member? key
+          message = <<-MESSAGE
+          \n
+          Valid keys for comparisions are :#{VALID_COMPARISIONS.keys.join(', :')}
+          RailsLegit also supports conditionals for the validations.
+          Valid conditionals are :#{VALID_CONDITIONALS.join(', :')}
+          MESSAGE
+
+          raise ArgumentError, message
         end
       end
     end
 
     def process_options!
+
       options.each do |k, v|
         if v.respond_to?(:to_date)
           comparisions[k] = v.send(:to_date)

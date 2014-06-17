@@ -43,6 +43,32 @@ class TestRecordWithNoExtraOptions
   end
 end
 
+class TestRecordWithNoExtraOptionsIfCondition
+  include ActiveModel::Validations
+  include RailsLegit
+
+  validates :date, verify_date: true, if: -> { @condition == true }
+
+  attr_accessor :date, :condition
+  def initialize(date, condition)
+    @date = date
+    @condition = condition
+  end
+end
+
+class TestRecordWithNoExtraOptionsIfUnlessCondition
+  include ActiveModel::Validations
+  include RailsLegit
+
+  validates :date, verify_date: true, unless: -> { @condition == true }
+
+  attr_accessor :date, :condition
+  def initialize(date, condition)
+    @date = date
+    @condition = condition
+  end
+end
+
 class TestRecordWithNoExtraOptionsMultipleAttributes
   include ActiveModel::Validations
   include RailsLegit

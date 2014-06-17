@@ -2,6 +2,41 @@ require "spec_helper"
 require "support/date"
 
 describe RailsLegit::VerifyDateValidator do
+  context 'Conditionals' do
+    context 'If' do
+      context 'No Extra Options Provided' do
+        let(:record) { TestRecordWithNoExtraOptionsIfCondition.new(date, condition) }
+        subject { record }
+
+        context 'True Conditional' do
+          let(:condition) { true }
+
+          context "Invalid Date" do
+            let(:date) { "Invalid Date" }
+
+            it "should attach error on appropriate method" do
+              expect(record.valid?).to eq(false)
+              expect(record.errors[:date]).to include("Invalid Date Format")
+            end
+          end
+        end
+
+        context 'False Conditional' do
+          let(:condition) { false }
+
+          context "Invalid Date" do
+            let(:date) { "Invalid Date" }
+
+            it "should not attach error on appropriate method" do
+              expect(record.valid?).to eq(false)
+              expect(record.errors[:date]).to_not include("Invalid Date Format")
+            end
+          end
+        end
+      end
+    end
+  end
+
   describe "No Extra Options provided" do
     let(:record) { TestRecordWithNoExtraOptions.new(date) }
     subject { record }
