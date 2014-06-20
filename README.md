@@ -106,11 +106,11 @@ You can pass in a method as a symbol, string or a `Date` object. By default, all
 `:current`, `:today`, `:now` are sent to the object under validation.
 
 ```ruby
-validates :from_date, date: { greater_than: :current } # Date.current is used
-validates :from_date, date: { greater_than: :today   } # Date.current is used 
-validates :from_date, date: { greater_than: :now     } # Date.current is used
+validates :from_date, date: { after: :current } # Date.current is used
+validates :from_date, date: { after: :today   } # Date.current is used 
+validates :from_date, date: { after: :now     } # Date.current is used
 
-validates :from_date, date: { greater_than: :end_date } # <EventForm Object>.end_date is used
+validates :from_date, date: { after: :end_date } # <EventForm Object>.end_date is used
 ```
 
 Finally,
@@ -120,8 +120,8 @@ class EventForm
   attr_accessor :to_date, :from_date
   include ActiveModel::Model
   include RailsLegit
-  validates :from_date, date: { greater_than: :today }
-  validates :to_date, date: { greater_than: :from_date }
+  validates :from_date, date: { after: :today }
+  validates :to_date, date: { after: :from_date }
 end
 ```
 
