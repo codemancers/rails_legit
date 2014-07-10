@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
   spec.homepage      = ""
   spec.license       = "MIT"
 
-  spec.files         = Dir.glob('lib/**/*') + ['Rakefile', 'README.md', 'LICENSE.txt']
+  spec.files         = `git ls-files lib`.split($/) + ['Rakefile', 'README.md', 'LICENSE.txt']
   spec.require_paths = ["lib"]
 
   spec.add_development_dependency "bundler", "~> 1.3"
