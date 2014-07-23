@@ -48,16 +48,8 @@ module RailsLegit
       end
     end
 
-    def check_validity!
-      options.keys.each do |key|
-        unless VALID_COMPARISIONS.member?(key)
-          raise ArgumentError, "Valid keys for options are #{VALID_COMPARISIONS.keys.join(", ")}"
-        end
-      end
-    end
-
     def process_options!
-      options.each do |k, v|
+      options.slice(*VALID_COMPARISIONS.keys).each do |k, v|
         if v.respond_to?(:to_date)
           comparisions[k] = v.send(:to_date)
         elsif v.is_a? Proc
