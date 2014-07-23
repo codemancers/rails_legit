@@ -41,14 +41,6 @@ module RailsLegit
       end
     end
 
-    def check_validity!
-      options.keys.each do |key|
-        unless VALID_COMPARISIONS.member?(key)
-          raise ArgumentError, "Valid keys for options are #{VALID_COMPARISIONS.join(', ')}"
-        end
-      end
-    end
-
     private
 
     def compare_both_arrays(record_array, verification_array, attribute, type_of_comparision, record)
@@ -72,7 +64,7 @@ module RailsLegit
     end
 
     def process_options!
-      options.each do |k, v|
+      options.slice(*VALID_COMPARISIONS).each do |k, v|
         unless v.is_a?(Proc) || v.is_a?(Symbol) || v.is_a?(Array)
           raise ArgumentError, "Valid values for options are a Proc or Symbol or an Array"
         end
