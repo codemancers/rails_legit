@@ -18,6 +18,22 @@ describe RailsLegit::VerifyDateValidator do
     end
   end
 
+  describe "Custom Error Message" do
+    let(:record) { TestRecordWithCustomErrorMessage.new(date) }
+    subject { record }
+
+    include_examples "basic date validations"
+
+    context "Invalid Date" do
+      let(:date) { "Invalid Date" }
+
+      it "should attach error on appropriate method" do
+        record.valid?
+        expect(record.errors[:date]).to include("This is a custom error message")
+      end
+    end
+  end
+
   describe "No Extra Options provided and multiple attributes" do
     let(:record) { TestRecordWithNoExtraOptionsMultipleAttributes.new(date, anotherdate) }
     let(:anotherdate) { Date.today }

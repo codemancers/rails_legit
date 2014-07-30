@@ -43,6 +43,18 @@ class TestRecordWithNoExtraOptions
   end
 end
 
+class TestRecordWithCustomErrorMessage
+  include ActiveModel::Validations
+  include RailsLegit
+
+  validates :date, verify_date: { message: 'This is a custom error message' }
+
+  attr_accessor :date
+  def initialize(date)
+    @date = date
+  end
+end
+
 class TestRecordWithNoExtraOptionsMultipleAttributes
   include ActiveModel::Validations
   include RailsLegit

@@ -22,12 +22,12 @@ module RailsLegit
       date_to_check = try_to_convert_to_date(value)
 
       if value.nil?
-        record.errors.add(attribute, "Can't be nil")
+        record.errors.add(attribute, options[:message] || "Can't be nil")
         return
       end
 
       unless date_to_check
-        record.errors.add(attribute, "Invalid Date Format")
+        record.errors.add(attribute, options[:message] || "Invalid Date Format")
         return
       end
 
@@ -37,9 +37,9 @@ module RailsLegit
 
         # TODO: should check for :current instead
         message = if date_to_check < Date.today
-                    "Occurs in the past"
+                    options[:message] || "Occurs in the past"
                   else
-                    "Occurs before #{value.to_s.humanize}"
+                    options[:message] || "Occurs before #{value.to_s.humanize}"
                   end
 
         unless date_to_check.send(VALID_COMPARISIONS[key], date_to_be_checked_with)
