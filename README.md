@@ -233,6 +233,20 @@ other words even if the hash in the first example in Hash section was `{
 one: 1, two: 2 }`, it would still validate to true. To add to that, the
 ordering is not significant.
 
+### Custom Error Messages
+
+You can pass in custom error message for validations like so:
+
+```ruby
+validates some_hash, verify_hash: {
+  values: [1, 2, 3],
+   message: 'This is a custom message'
+}
+```
+
+__Support for fetching error messages from translation files will be added
+in the next release.__
+
 ## Contributing
 
 1. Fork it

@@ -26,6 +26,11 @@ class BaseRecord
   end
 end
 
+
+class CustomErrorMessageArray < BaseRecord
+  validates :array, :anotherarray, verify_array: { in: [1, 2, 3, 4], message: 'Custom Error Message' }
+end
+
 class NoOptionsMultipleAttributes < BaseRecord
   validates :array, :anotherarray, verify_array: true
 end

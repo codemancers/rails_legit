@@ -14,6 +14,18 @@ class NoExtraOptionsHash
   end
 end
 
+class CustomErrorMessageHash
+  include ActiveModel::Validations
+  include RailsLegit
+
+  validates :hash, verify_hash: { message: 'Custom Error Message'}
+
+  attr_accessor :hash
+  def initialize(hash)
+    @hash = hash
+  end
+end
+
 class BaseRecordHashValidator
   include ActiveModel::Validations
   include RailsLegit

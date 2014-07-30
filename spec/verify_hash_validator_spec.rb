@@ -22,6 +22,26 @@ describe RailsLegit::VerifyHashValidator do
     end
   end
 
+  describe "Custom Error Message" do
+    let(:record) { CustomErrorMessageHash.new(hash) }
+    subject { record }
+
+    context "Valid Hash" do
+      let(:hash) { { one: 1, two: 2, three: 3, four: 4 } }
+      it { should be_valid }
+    end
+
+    context "Invalid Hash" do
+      let(:hash) { "Invalid Hash" }
+
+      it { should_not be_valid }
+      it "should attach error on appropriate method" do
+        record.valid?
+        expect(record.errors[:hash]).to include("Custom Error Message")
+      end
+    end
+  end
+
   describe "No Extra Options provided and multiple attributes" do
     let(:record) { NoOptionsMultipleAttributesHash.new(hash, anotherhash) }
     let(:anotherhash) { {one: 1, two: 2} }

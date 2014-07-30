@@ -16,7 +16,7 @@ module RailsLegit
 
     def validate_each(record, attribute, value)
       unless value.is_a?(Hash)
-        record.errors.add(attribute, "Not a Hash")
+        record.errors.add(attribute, options[:message] || "Not a Hash")
         return
       end
 
@@ -56,7 +56,7 @@ module RailsLegit
       end
 
       unless record_array_set.subset?(verification_array_set)
-        record.errors.add(attribute, "The given array is not a subset of #{verification_array}. Expected it to not be one")
+        record.errors.add(attribute, options[:message] || "The given array is not a subset of #{verification_array}. Expected it to not be one")
       end
     end
 
