@@ -15,7 +15,7 @@ module RailsLegit
 
     def validate_each(record, attribute, value)
       unless value.is_a?(Array)
-        record.errors.add(attribute, "Not an Array")
+        record.errors.add(attribute, options[:message] || "Not an Array")
         return
       end
 
@@ -50,15 +50,15 @@ module RailsLegit
       case type_of_comparision
       when :in
         unless record_array_set.subset?(verification_array_set)
-          record.errors.add(attribute, "The given array is not a subset of #{verification_array}. Expected it to not be one")
+          record.errors.add(attribute, options[:message] || "The given array is not a subset of #{verification_array}. Expected it to not be one")
         end
       when :not_in
         if record_array_set.subset?(verification_array_set)
-          record.errors.add(attribute, "The given array is a subset of #{verification_array}. Expected it to not be one")
+          record.errors.add(attribute, options[:message] || "The given array is a subset of #{verification_array}. Expected it to not be one")
         end
       when :eq
         unless record_array_set == verification_array_set
-          record.errors.add(attribute, "The given array is not equal to #{verification_array}. Expected it to be equal")
+          record.errors.add(attribute, options[:message] || "The given array is not equal to #{verification_array}. Expected it to be equal")
         end
       end
     end

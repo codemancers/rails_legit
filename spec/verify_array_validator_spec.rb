@@ -44,6 +44,24 @@ describe RailsLegit::VerifyArrayValidator do
     end
   end
 
+  describe "Custom Error messages" do
+    let(:array) { [1, 2, 3] }
+    let(:anotherarray) { [9, 31] }
+
+    context "In validator" do
+      context "comparision object is Array" do
+        let(:record) { CustomErrorMessageArray.new(array, anotherarray) }
+
+        it { should_not be_valid }
+
+        it 'should attach custom error on appropriate attribute' do
+          record.valid?
+          expect(record.errors[:anotherarray]).to include("Custom Error Message")
+        end
+      end
+    end
+  end
+
   describe "Multiple attributes, Valid case" do
     let(:array) { [1, 2, 3] }
     let(:anotherarray) { [4, 3] }
